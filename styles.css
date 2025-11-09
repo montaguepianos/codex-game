@@ -1,0 +1,252 @@
+:root {
+  font-family: 'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #f5f7ff;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: radial-gradient(circle at 20% 20%, #0c1220, #030509 70%);
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  touch-action: none;
+  user-select: none;
+  overscroll-behavior: none;
+}
+
+canvas {
+  display: block;
+}
+
+.fire-control {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.2rem;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(10, 24, 44, 0.75);
+  border: 1px solid rgba(125, 249, 255, 0.4);
+  box-shadow: 0 12px 24px rgba(2, 12, 28, 0.65), inset 0 0 10px rgba(125, 249, 255, 0.35);
+  color: #7df9ff;
+  font-size: 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  z-index: 2;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.fire-control:active {
+  transform: scale(0.92);
+  box-shadow: 0 4px 18px rgba(2, 12, 28, 0.8), inset 0 0 14px rgba(125, 249, 255, 0.55);
+}
+
+button,
+.overlay__btn,
+.fire-control {
+  touch-action: manipulation;
+}
+
+.hud {
+  position: fixed;
+  top: 1.2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  background: rgba(6, 10, 22, 0.55);
+  box-shadow: 0 1px 18px rgba(6, 11, 24, 0.4);
+  backdrop-filter: blur(14px);
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  z-index: 2;
+}
+
+.hud span {
+  color: #7df9ff;
+  font-weight: 600;
+  margin-left: 0.4rem;
+}
+
+.hud__health {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hud__health-label {
+  color: #f5f7ff;
+  font-weight: 500;
+}
+
+.health-bar {
+  width: 120px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.4);
+}
+
+.health-bar__fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #5af5a2, #2ee6cf);
+  transition: width 0.2s ease-out, background 0.2s ease-out;
+}
+
+.hud__status {
+  position: fixed;
+  bottom: 1.6rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.85rem 1.3rem;
+  border-radius: 0.9rem;
+  background: rgba(5, 10, 24, 0.65);
+  box-shadow: 0 6px 20px rgba(2, 6, 18, 0.65);
+  text-align: center;
+  font-size: 0.9rem;
+  color: #a8b3ff;
+  letter-spacing: 0.02em;
+  z-index: 2;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(1, 3, 8, 0.8), rgba(3, 6, 13, 0.96));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+  z-index: 3;
+}
+
+.overlay.overlay--visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.overlay__panel {
+  max-width: 420px;
+  width: 100%;
+  background: rgba(6, 9, 20, 0.85);
+  border-radius: 1.4rem;
+  padding: 2rem;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.55), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  text-align: center;
+  backdrop-filter: blur(16px);
+}
+
+.overlay__eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  font-size: 0.75rem;
+  color: #7df9ff;
+  margin: 0 0 0.8rem;
+}
+
+.overlay__title {
+  margin: 0 0 0.8rem;
+  font-size: clamp(1.6rem, 5vw, 2.4rem);
+  color: #f5f7ff;
+}
+
+.overlay__scoreline {
+  margin: 0 auto 1.6rem;
+  color: #cdd5ff;
+  font-size: 1rem;
+}
+
+.overlay__scoreline span {
+  color: #7df9ff;
+  font-weight: 600;
+}
+
+.overlay__actions {
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+}
+
+.overlay__btn {
+  border: none;
+  border-radius: 999px;
+  padding: 0.9rem 1.3rem;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.overlay__btn:active {
+  transform: scale(0.98);
+}
+
+.overlay__btn--primary {
+  background: linear-gradient(120deg, #27f3ff, #7df9ff 70%);
+  color: #02121c;
+  box-shadow: 0 12px 30px rgba(6, 202, 255, 0.35);
+}
+
+.overlay__btn--ghost {
+  background: rgba(255, 255, 255, 0.08);
+  color: #f5f7ff;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.overlay__hint {
+  margin-top: 1.3rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  color: #9ba9ff;
+}
+
+@media (max-width: 600px) {
+  .hud {
+    flex-direction: column;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    align-items: center;
+  }
+
+  .hud__status {
+    width: calc(100% - 2rem);
+    left: 1rem;
+    transform: none;
+  }
+
+  .hud__health {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .health-bar {
+    width: 100%;
+  }
+
+  .overlay__panel {
+    padding: 1.5rem;
+  }
+
+  .fire-control {
+    width: 56px;
+    height: 56px;
+    font-size: 1.5rem;
+  }
+
+  .hud__status {
+    display: none;
+  }
+}
