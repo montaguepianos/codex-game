@@ -1,0 +1,131 @@
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Codex Game</title>
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #111;
+      overflow: hidden;
+      height: 100%;
+      width: 100%;
+      touch-action: none;
+    }
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+<script>
+class MainScene extends Phaser.Scene {
+  create() {
+    this.cameras.main.setBackgroundColor('#1e1e1e');
+    this.createTextures();
+    this.player = this.physics.add.sprite(this.scale.width / 2, this.scale.height / 2, 'player');
+    this.player.setCollideWorldBounds(true);
+    this.player.setDamping(true);
+    this.player.setDrag(220);
+    this.player.setMaxVelocity(340);
+    this.target = this.physics.add.staticSprite(0, 0, 'target');
+    this.respawnTarget();
+    this.physics.world.setBounds(0, 0, this.scale.width, this.scale.height);
+    this.physics.add.overlap(this.player, this.target, this.collectTarget, undefined, this);
+    this.score = 0;
+    this.bestScore = Number(window.localStorage.getItem('bestScore') || 0);
+    this.scoreText = this.add.text(16, 16, this.formatScoreText(), { color: '#fff', fontSize: '18px' });
+    this.instructionsText = this.add.text(16, 46, 'Tap or click to move', { color: '#bbb', fontSize: '16px' });
+    this.input.on('pointerdown', this.onPointerDown, this);
+    this.input.on('pointerup', this.onPointerUp, this);
+    this.scale.on('resize', this.handleResize, this);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      this.input.off('pointerdown', this.onPointerDown, this);
+      this.input.off('pointerup', this.onPointerUp, this);
+      this.scale.off('resize', this.handleResize, this);
+    });
+  }
+  createTextures() {
+    const g = this.add.graphics();
+    g.fillStyle(0xffffff);
+    g.fillCircle(0, 0, 20);
+    g.fillCircle(20, 20, 20);
+    g.generateTexture('player', 40, 40);
+    g.clear();
+    g.fillStyle(0xffc300);
+    g.fillCircle(16, 16, 16);
+    g.lineStyle(3, 0xff8c00);
+    g.strokeCircle(16, 16, 16);
+    g.generateTexture('target', 32, 32);
+    g.destroy();
+  }
+    this.player = this.physics.add.sprite(200, 200, 'player');
+    this.player.setCollideWorldBounds(true);
+    this.input.on('pointerdown', p => {
+      const speed = 250;
+      const angle = Math.atan2(p.y - this.player.y, p.x - this.player.x);
+      this.player.setVelocity(Math.cos(angle) * speed, Math.sin(angle) * speed);
+    });
+    this.add.text(10, 10, 'Tap anywhere to move', { color: '#fff', fontSize: '18px' });
+  onPointerDown(pointer) {
+    const speed = 300;
+    const angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, pointer.x, pointer.y);
+    this.physics.velocityFromRotation(angle, speed, this.player.body.velocity);
+  }
+  onPointerUp() {
+    this.player.setVelocity(0, 0);
+  }
+  collectTarget() {
+    this.score += 1;
+    if (this.score > this.bestScore) {
+      this.bestScore = this.score;
+      window.localStorage.setItem('bestScore', String(this.bestScore));
+    }
+    this.updateScoreText();
+    this.respawnTarget();
+  }
+  respawnTarget() {
+    const padding = 48;
+    const x = Phaser.Math.Between(padding, Math.max(padding, this.scale.width - padding));
+    const y = Phaser.Math.Between(padding, Math.max(padding, this.scale.height - padding));
+    this.target.setPosition(x, y);
+    this.target.body.updateFromGameObject();
+  }
+  updateScoreText() {
+    this.scoreText.setText(this.formatScoreText());
+  }
+  formatScoreText() {
+    return `Score: ${this.score}  |  Best: ${this.bestScore}`;
+  }
+  handleResize(gameSize) {
+    const { width, height } = gameSize;
+    this.cameras.resize(width, height);
+    this.physics.world.setBounds(0, 0, width, height);
+    this.keepSpriteInBounds(this.player, width, height);
+    this.keepSpriteInBounds(this.target, width, height, true);
+  }
+  keepSpriteInBounds(sprite, width, height, isStatic = false) {
+    const halfWidth = sprite.displayWidth / 2;
+    const halfHeight = sprite.displayHeight / 2;
+    const clampedX = Phaser.Math.Clamp(sprite.x, halfWidth, width - halfWidth);
+    const clampedY = Phaser.Math.Clamp(sprite.y, halfHeight, height - halfHeight);
+    sprite.setPosition(clampedX, clampedY);
+    if (isStatic) {
+      sprite.body.updateFromGameObject();
+    }
+  }
+}
+new Phaser.Game({
+  type: Phaser.AUTO,
+  width: window.innerWidth,
+  height: window.innerHeight,
+  backgroundColor: '#000',
+  physics: { default: 'arcade' },
+  scene: [MainScene],
+  scale: { mode: Phaser.Scale.RESIZE, autoCenter: Phaser.Scale.CENTER_BOTH }
+});
+</script>
+</body>
+</html>
+</html>
