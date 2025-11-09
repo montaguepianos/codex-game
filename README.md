@@ -1,4 +1,4 @@
-# Codex Drift
+# Space Blaster 2
 
 A lightweight 3D endless runner prototype powered by Three.js. Pilot a neon hovercraft through an asteroid-dense starfield, weave past debris, juggle your shield’s health bar, and scoop up energy orbs for brief boosts while synth placeholder audio and particle bursts deliver moment-to-moment feedback.
 
