@@ -13,6 +13,9 @@ body {
   width: 100%;
   touch-action: none;
   user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -ms-touch-action: none;
   overscroll-behavior: none;
 }
 
@@ -44,6 +47,12 @@ canvas {
 .fire-control:active {
   transform: scale(0.92);
   box-shadow: 0 4px 18px rgba(2, 12, 28, 0.8), inset 0 0 14px rgba(125, 249, 255, 0.55);
+}
+
+button,
+.overlay__btn,
+.fire-control {
+  touch-action: manipulation;
 }
 
 button,

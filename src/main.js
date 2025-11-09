@@ -12,6 +12,38 @@ const playAgainBtn = document.getElementById('playAgainBtn');
 const quitBtn = document.getElementById('quitBtn');
 const fireButton = document.getElementById('fireButton');
 
+function disableMobileZoom() {
+  const prevent = (event) => event.preventDefault();
+  window.addEventListener('gesturestart', prevent, { passive: false });
+  window.addEventListener('gesturechange', prevent, { passive: false });
+  window.addEventListener('gestureend', prevent, { passive: false });
+
+  window.addEventListener(
+    'touchstart',
+    (event) => {
+      if (event.touches.length > 1) {
+        event.preventDefault();
+      }
+    },
+    { passive: false }
+  );
+
+  let lastTouchEnd = 0;
+  window.addEventListener(
+    'touchend',
+    (event) => {
+      const now = Date.now();
+      if (now - lastTouchEnd <= 350) {
+        event.preventDefault();
+      }
+      lastTouchEnd = now;
+    },
+    { passive: false }
+  );
+}
+
+disableMobileZoom();
+
 const PLAY_AREA = {
   x: 6,
   yMin: -3,
